@@ -1,16 +1,26 @@
-// import { Form } from "react-bootstrap";
-
 import { Form, useSubmit } from "react-router-dom";
+import { PostStatusType } from "../types";
 
-// import { PostStatusType } from "../types";
+interface PostFilterProps {
+  selectPostStatus: PostStatusType;
+  setSelectPostStatus: (value: PostStatusType) => void;
+}
 
-// interface PostFilterProps {
-//   selectPostStatus: PostStatusType;
-//   setSelectPostStatus: (value: PostStatusType) => void;
-// }
-
-const PostFilter = () => {
+const PostFilter = ({
+  selectPostStatus,
+  setSelectPostStatus,
+}: PostFilterProps) => {
   const submit = useSubmit();
+
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newValue = e.target.value as PostStatusType;
+
+    // 1. Update the parent/local state
+    setSelectPostStatus(newValue);
+
+    // 2. Submit the form to React Router (updates URL search params/triggers loader)
+    submit(e.currentTarget.form);
+  };
 
   return (
     <>
@@ -19,9 +29,10 @@ const PostFilter = () => {
         <select
           name="status"
           className="form-select"
-          onChange={(e) => {
-            submit(e.currentTarget.form);
-          }}
+          // defaultValue={selectPostStatus}
+          // onChange={(e) => submit(e.currentTarget.form)}
+          value={selectPostStatus} // Changed from defaultValue to value
+          onChange={handleStatusChange}
         >
           <option value="all">Select Status</option>
           <option value="published">Publish</option>

@@ -1,21 +1,21 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import axios from "axios";
-import { Post } from "../types";
+import { Post, PostStatusType } from "../types";
 
-const fetchPosts = async (): Promise<Post[]> => {
-  const result = await axios.get<Post[]>("http://localhost:3000/posts");
+const fetchPosts = async (status: PostStatusType): Promise<Post[]> => {
+  const result = await axios.get<Post[]>("http://localhost:3000/posts", {
+    params: status !== "all" ? { status } : {},
+  });
 
   return result.data;
 };
 
-const useGetPosts = (): UseQueryResult<Post[]> => {
+const useGetPosts = (status: PostStatusType): UseQueryResult<Post[]> => {
   const query = useQuery({
-    queryKey: ["posts"],
-    queryFn: fetchPosts,
+    queryKey: ["posts", status],
+    queryFn: () => fetchPosts(status),
     staleTime: 1000 * 10,
   });
-
-  console.log(query);
 
   return query;
 };

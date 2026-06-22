@@ -6,4 +6,4 @@ export interface Post {
   topRate: boolean;
 }
 
-export type PostStatusType = "all" | "publish" | "draft" | "status";
+export type PostStatusType = "all" | "published" | "draft" | "block";

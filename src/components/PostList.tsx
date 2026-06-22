@@ -1,11 +1,15 @@
 import { Link } from "react-router-dom";
 import { Table, Form, ButtonGroup, Button } from "react-bootstrap";
 import useGetPosts from "../hooks/useGetPosts";
+import { PostStatusType } from "../types";
 
-const PostList = () => {
-  const { isLoading, isError, data, error } = useGetPosts();
+interface PostListProps {
+  selectPostStatus: PostStatusType;
+}
 
-  // Show Loading Until get the correct data
+const PostList = ({ selectPostStatus }: PostListProps) => {
+  const { isLoading, isError, data, error } = useGetPosts(selectPostStatus);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -27,17 +31,14 @@ const PostList = () => {
       </thead>
       <tbody>
         {data?.map((post, index) => (
-          <tr>
-            <td>{index++}</td>
+          <tr key={post.id}>
+            <td>{index + 1}</td>
             <td>
               <Link to="/info">{post.title}</Link>
             </td>
             <td>{post.status}</td>
             <td style={{ textAlign: "center" }}>
-              <Form.Check // prettier-ignore
-                type="switch"
-                checked={post.topRate}
-              />
+              <Form.Check type="switch" checked={post.topRate} readOnly />
             </td>
             <td>
               <ButtonGroup aria-label="Basic example">
